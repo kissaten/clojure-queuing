@@ -14,6 +14,8 @@
 (defroutes app
   (GET "/" []
        (splash))
+  (GET "/request_id" {:keys [headers params body] :as request} 
+       (my-fn headers body request))
   (ANY "*" []
        (route/not-found (slurp (io/resource "404.html")))))
 
