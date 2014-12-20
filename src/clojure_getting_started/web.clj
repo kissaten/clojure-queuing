@@ -15,7 +15,7 @@
   (GET "/" []
        (splash))
   (GET "/request_id" {:keys [headers params body] :as request} 
-       (my-fn headers body request))
+       (format "<h1>%s</h1>" headers))
   (ANY "*" []
        (route/not-found (slurp (io/resource "404.html")))))
 
