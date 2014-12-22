@@ -16,13 +16,13 @@
 
 (def qname "langohr.examples.hello-world")
 
+(def amqp-url (get (System/getenv) "CLOUDAMQP_URL" "amqp://guest:guest@localhost:5672"))
+
 (defn message-handler
   [ch {:keys [content-type delivery-tag] :as meta} ^bytes payload]
   (println
     (format "[consumer] Received a message: %s, delivery tag: %d, content type: %s"
     (String. payload "UTF-8") delivery-tag content-type)))
-
-(def amqp-url (get (System/getenv) "CLOUDAMQP_URL" "amqp://guest:guest@localhost:5672"))
 
 (defn splash []
   {:status 200
@@ -33,7 +33,8 @@
   (GET "*" []
     (let [conn  (rmq/connect {:uri amqp-url})
           ch    (lch/open conn)]
-    (lb/publish ch default-exchange-name qname "Hello!" {:content-type "text/plain" :type "greetings.hi"})
+    (lb/publish ch default-exchange-name qname
+      "Hello!" {:content-type "text/plain" :type "greetings.hi"})
     (rmq/close ch)
     (rmq/close conn)
     (splash))))
