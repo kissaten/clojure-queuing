@@ -24,11 +24,6 @@
     (format "[consumer] Received a message: %s, delivery tag: %d, content type: %s"
     (String. payload "UTF-8") delivery-tag content-type)))
 
-(defn splash []
-  {:status 200
-   :headers {"Content-Type" "text/plain"}
-   :body "Published message!"})
-
 (defroutes app
   (GET "*" []
     (let [conn  (rmq/connect {:uri amqp-url})
@@ -37,7 +32,9 @@
       "Hello!" {:content-type "text/plain" :type "greetings.hi"})
     (rmq/close ch)
     (rmq/close conn)
-    (splash))))
+    {:status 200
+     :headers {"Content-Type" "text/plain"}
+     :body "Published message!"})))
 
 (defn -main [& [port]]
   (let [conn  (rmq/connect {:uri amqp-url})
